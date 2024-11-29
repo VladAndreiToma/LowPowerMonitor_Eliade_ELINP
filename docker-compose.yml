@@ -1,0 +1,37 @@
+version: '3.3'
+
+# author: engr.phys. Vlad Andrei Toma
+
+services:
+  influxdb:
+    image: influxdb:1.8  # Specify the version you're using
+    ports:
+      - "8086:8086"  # InfluxDB external port 9000, internal port 8086
+    environment:
+      INFLUXDB_DB: TPC_DT1415_Monitor  # Set your desired database name
+      INFLUXDB_HTTP_AUTH_ENABLED: "false"  # Disable authentication
+    restart: always  # Restart on reboot
+    volumes:
+      - influxdb_data_TPC_DT1415:/var/lib/influxdb  # Named volume for InfluxDB data
+    networks:
+      - monitorTPC  # Change network name
+    
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3010:3000"  # Grafana external port 3010, internal port 3000
+    environment:
+      GF_SECURITY_ADMIN_USER: "admin"  # Set admin username
+      GF_SECURITY_ADMIN_PASSWORD: "TPC"  # Set admin password
+    restart: always  # Restart on reboot
+    volumes:
+      - grafana_data_TPC_DT1415:/var/lib/grafana  # Named volume for Grafana data
+    networks:
+      - monitorTPC  # Change network name
+
+networks:
+  monitorTPC:  # Changed network name
+
+volumes:
+  influxdb_data_TPC_DT1415:  # Define named volume for InfluxDB
+  grafana_data_TPC_DT1415:    # Define named volume for Grafana
